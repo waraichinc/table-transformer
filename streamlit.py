@@ -2,8 +2,7 @@ import streamlit as st
 
 
 st.set_page_config(
-    page_title="Table Transformer",
-    layout='wide'
+    page_title="Table Transformer"
 )
 
 st.title('Table Transformer')
