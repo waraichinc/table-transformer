@@ -31,6 +31,9 @@ class Transformer:
             return str(e)
     
     def generate_transformations(self,template_upload,csv_upload,openai_api_key):
+        """
+        Generates transformations as per template
+        """
         template = self.read_csv(template_upload)
         source = self.read_csv(csv_upload)
         
@@ -113,5 +116,20 @@ class Transformer:
         })
         
     
+    def feedback(self,prediction,feedback,openai_api_key):
+        
+        """ Generates updated transformation as per feedback """
+
+        llm = ChatOpenAI(model='gpt-3.5-turbo', openai_api_key=openai_api_key, temperature=0)
+        prompt = PromptTemplate(
+            input_variables=["prediction", "feedback"],
+            template="""
+            - Update the following JSON output:
+                {prediction}
+            - Based on these corrections carefully:
+                {feedback}
+            """
+        )
+        return self.run_llmchain(llm, prompt, {'prediction': prediction, 'feedback': feedback})
 
         
