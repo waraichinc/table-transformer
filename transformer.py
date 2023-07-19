@@ -91,7 +91,6 @@ class Transformer:
             1. Mapping of user data columns to template data columns (column_renames)
             
             2. Data transformations of format and data type, it also shows the example data of column (data_transformations) [CAUTION: data_transformations should fill all the values. If you don't want to change the format or datatype or firstdata, please fill the same value as the old one.]
-]
             3. Columns to remove or keep (columns_to_remove, columns_to_keep)
 
             The output should follow JSON format, this is one of the example: {example}
