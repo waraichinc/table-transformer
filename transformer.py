@@ -42,40 +42,40 @@ class Transformer:
         output = {}
 
         for col in self.template_columns:
-            output[f"source_{col}_format"] = "format of the column in the source user data"
-            output[f"template_{col}_format"] = "format of the column in the template data"
-            output[f"source_{col}_datatype"] = "data type of the column in the source user data"
-            output[f"template_{col}_datatype"] = "data type of the column in the template data"
-            output[f"source_{col}_example_data"] = "example data of the column in the source user data"
-            output[f"template_{col}_example_data"] = "example data of the column in the template data"
+            output[f"old_source_{col}_format"] = "format of the column in the source user data"
+            output[f"new_template_{col}_format"] = "format of the column in the template data"
+            output[f"old_source_{col}_datatype"] = "data type of the column in the source user data"
+            output[f"new_template_{col}_datatype"] = "data type of the column in the template data"
+            output[f"old_source_{col}_example_data"] = "example data of the column in the source user data"
+            output[f"new_template_{col}_example_data"] = "example data of the column in the template data"
         
         example = """
         {
             "renamed_columns_as_per_template": {},
-            "columns_to_remove_as_per_template": [list of columns to be removed],
-            "columns_to_keep_as_per_template": [list of columns to be kept],
-            "data_transformations_as_per_template":  %s
+            "kept_columns_as_per_template": [list of columns to be kept]
+            "removed_columns_as_per_template": [list of columns to be removed],
+            "transformations":  %s
         }
         """ % output
 
         detailed_example = """
-        Here column_renames is a mapping of user data columns to template data columns, for example:
+        Here renamed_columns_as_per_template is a mapping of source data columns to template data columns, for example:
         {
-            "user_data_column_1": "template_data_column_1",
-            "user_data_column_2": "template_data_column_2",
+            "source_data_column_1": "template_data_column_1",
+            "source_data_column_2": "template_data_column_2",
         }
 
-        Here in data_transformations, while computing observe these very carefully:
+        Here in transformations, while computing observe these very carefully:
         {
-            "source_col_format": format of the column in the source user data
-            "template_col_format": format of the column in the template data,
-            "source_col_datatype": data type of the column in the source user data
-            "template_col_datatype": data type of the column in the template data
-            "source_col_example_data": example data of the column in the source user data
-            "template_col_example_data": example data of the column in the template data
+            "old_source_col_format": format of the column in the source user data
+            "new_template_col_format": format of the column in the template data
+            "old_source_col_datatype": data type of the column in the source user data
+            "new_template_col_datatype": data type of the column in the template data
+            "old_source_col_example_data": example data of the column in the source user data
+            "new_template_col_example_data": example data of the column in the template data
         }
 
-        column is the column name in the template data
+        col is the column name in the template data
         """
 
         prompt = PromptTemplate(
@@ -83,17 +83,17 @@ class Transformer:
             template="""
             Given the following information:
 
-            - User_data columns: {source_columns}
-            - User_data example row: {source_first_row}
+            - Source_data columns: {source_columns}
+            - Source_data first row example: {source_first_row}
             - Template_data columns: {template_columns}
-            - Template_data example row: {template_first_row}
+            - Template_data first row example: {template_first_row}
 
             Generate a JSON object detailing:
 
-            1. Mapping of user data columns to template data columns (column_renames)
+            1. Mapping of source data columns to template data columns (renamed_columns_as_per_template)
             
-            2. Data transformations of format and data type, it also shows the example data of column (data_transformations) [CAUTION: data_transformations should fill all the values. If you don't want to change the format or datatype or firstdata, please fill the same value as the old one.]
-            3. Columns to remove or keep (columns_to_remove, columns_to_keep)
+            2. Data transformations of format and data type as per {template_first_row}, it also shows the example data of column (transformations) [CAUTION: transformations should fill all the values. If you don't want to change the format or datatype or firstdata, please fill the same value as the old one.]
+            3. Columns to remove or Columns to keep (removed_columns_as_per_template, kept_columns_as_per_template)
 
             The output should follow JSON format, this is one of the example: {example}
             
@@ -102,7 +102,7 @@ class Transformer:
             """
         )
 
-        llm = ChatOpenAI(model='gpt-3.5-turbo',openai_api_key=openai_api_key,temperature=0.3)
+        llm = ChatOpenAI(model='gpt-3.5-turbo',openai_api_key=openai_api_key,temperature=0.2)
         return self.run_llmchain(llm, prompt, {
             'source_columns': self.source_columns,
             'source_first_row': self.source_first_row,
