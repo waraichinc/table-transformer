@@ -3,7 +3,7 @@ import streamlit as st
 from tableTransformer.transformer import Transformer
 
 #openai_api_key = os.getenv('OPENAI_API_KEY')
-openai_api_key=st.secrets['openai']['OPENAI_API_KEY']
+openai_api_key=st.secrets['open_ai_api_key']
 
 Transformer = Transformer()
 
