@@ -14,6 +14,7 @@ class Transformer:
         self.source_columns = None
         self.source_first_row = None
     
+    @staticmethod
     def read_csv(csv):
         try:
             csv = pd.read_csv(csv)
@@ -21,6 +22,7 @@ class Transformer:
         except Exception as e:
             return str(e)
     
+    @staticmethod
     def run_llmchain(llm,prompt,args):
         try:
             chain = LLMChain(llm=llm,prompt=prompt)
@@ -49,10 +51,10 @@ class Transformer:
         
         example = """
         {
-            "column_renames": {},
-            "columns_to_remove": [list of columns to be removed],
-            "columns_to_keep": [list of columns to be kept],
-            "data_transformations":  %s
+            "renamed_columns_as_per_template": {},
+            "columns_to_remove_as_per_template": [list of columns to be removed],
+            "columns_to_keep_as_per_template": [list of columns to be kept],
+            "data_transformations_as_per_template":  %s
         }
         """ % output
 

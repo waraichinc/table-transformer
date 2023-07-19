@@ -16,7 +16,8 @@ template_upload = st.file_uploader("Upload Template",type=['csv'])
 csv_upload = st.file_uploader("Upload CSV",type=['csv'])
 
 if template_upload and csv_upload:
-    result = Transformer.generate_transformations(csv_upload,template_upload,openai_api_key)
+    print(openai_api_key)
+    result = Transformer.generate_transformations(template_upload,csv_upload,openai_api_key)
     st.json(result)
 
 else:
