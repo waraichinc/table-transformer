@@ -116,20 +116,55 @@ class Transformer:
         })
         
     
-    def feedback(self,prediction,feedback,openai_api_key):
-        
+    def feedback(self,transformation,feedback,openai_api_key):
+
         """ Generates updated transformation as per feedback """
 
         llm = ChatOpenAI(model='gpt-3.5-turbo', openai_api_key=openai_api_key, temperature=0)
         prompt = PromptTemplate(
-            input_variables=["prediction", "feedback"],
+            input_variables=["transformation", "feedback"],
             template="""
             - Update the following JSON output:
-                {prediction}
+                {transformation}
             - Based on these corrections carefully:
                 {feedback}
             """
         )
-        return self.run_llmchain(llm, prompt, {'prediction': prediction, 'feedback': feedback})
+        return self.run_llmchain(llm, prompt, {'transformation': transformation, 'feedback': feedback})
+    
+    def transformations_to_code(self,transformation,openai_api_key):
+        ''' Generates python code as per transformation'''
+
+        llm = ChatOpenAI(model='gpt-3.5-turbo', openai_api_key=openai_api_key, temperature=0)
+        prompt = PromptTemplate(
+            input_variables=["source_columns", "source_first_row", "template_columns", "template_first_row", "transformation"],
+            template="""
+            - The source data columns are: {source_columns}
+            - The source data example row is: {source_first_row}
+            - The template data columns are: {template_columns}
+            - The template data example row is: {template_first_row}
+            - Given these instructions in JSON format:
+            
+            {transformation}
+            
+            - Write a Python script transforming 'source_data.csv' to 'transformed_data_as_per_template.csv' using pandas to:
+            
+            1. Rename the columns according to 'renamed_columns_as_per_template'
+            2. Drop the columns listed in 'removed_columns_as_per_template'
+            3. Keep the columns listed in 'removed_columns_as_per_template'
+            4. Apply the transformations specified in 'transformations'
+            
+            - The output should only be python script compatible with python3
+            
+            """
+        )
+        return self.run_llm_chain(llm, prompt, {
+            'source_columns': self.source_columns,
+            'source_first_row': self.source_first_row,
+            'template_columns':self.template_columns,
+            'template_first_row':self.template_first_row,
+            'transformation': transformation
+        })
+
 
         
