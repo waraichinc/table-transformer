@@ -14,5 +14,5 @@ if template_upload and csv_upload:
     None
 
 else:
-    st.write("Template and csv to be transformed are required")
+    st.write("**Template and csv to be transformed are required")
     
