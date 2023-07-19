@@ -21,16 +21,28 @@ if template_upload and csv_upload:
     st.json(transformation)
     
     feedback = st.selectbox("Are transformations correct?",['Yes','No'])
+    
     match feedback:
         case 'Yes':
             if st.button('Generate Python Transformation Code'):
                 code = Transformer.transformations_to_code(transformation,openai_api_key)
                 st.code(code)
                 st.write("Copy the code and run it on your machine")
+                st.caption("***Please refresh the page to try with other csv files")
+        
         case 'No':
-            None
-
-
+            feedback = st.text_input("Provide feedback as to what is not correct")
+            st.caption("Suggestion: new_template_PolicyNumber_datatype should be integer instead of string")
+            if feedback:
+                transformation = Transformer.feedback(transformation,feedback,openai_api_key)
+                if st.button('Generate Python Transformation Code'):
+                    code = Transformer.transformations_to_code(transformation,openai_api_key)
+                    st.code(code)
+                    st.write("Copy the code and run it on your machine")
+                    st.caption("**Please refresh the page to try with other csv files")
+    
+   
 else:
+
     st.write("**Template and CSV to be transformed are required")
     
