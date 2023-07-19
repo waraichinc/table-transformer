@@ -154,11 +154,11 @@ class Transformer:
             3. Keep the columns listed in 'removed_columns_as_per_template'
             4. Apply the transformations specified in 'transformations'
             
-            - The output should only be python script compatible with python3
+            - The output should only be python script compatible with python3.
             
             """
         )
-        return self.run_llm_chain(llm, prompt, {
+        return self.run_llmchain(llm, prompt, {
             'source_columns': self.source_columns,
             'source_first_row': self.source_first_row,
             'template_columns':self.template_columns,
