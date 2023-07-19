@@ -1,6 +1,6 @@
 import os
 import streamlit as st
-from transformer import Transformer
+from tableTransformer.transformer import Transformer
 
 openai_api_key = os.getenv('OPENAI_API_KEY')
 
