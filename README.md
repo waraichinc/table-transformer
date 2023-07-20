@@ -5,7 +5,7 @@ Built with [LangChain](https://github.com/hwchase17/langchain), [OpenAI](https:/
 
 # Setup
 ```shell
-# Pass openai_api_key as env varible or as streamlit secret
+# Pass openai_api_key as env variable or as streamlit secret
 export OPENAI_API_KEY = 'YOUR_KEY_HERE'
 ```
 ```shell
